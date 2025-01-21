@@ -1,0 +1,2 @@
+# Sensor Dashboard
+A project utilizing FreeRTOS to gather data from BMP280 and BH1750 sensor modules and display real-time readings on a serial terminal. The Virtual COM Port is used to interface with the device, with separate tasks dedicated to data collection, dashboard updates, and serial console communication.
