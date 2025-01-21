@@ -1,3 +1,4 @@
+"./Src/RTC.o"
 "./Src/SYSTICK.o"
 "./Src/UART.o"
 "./Src/VCOM.o"

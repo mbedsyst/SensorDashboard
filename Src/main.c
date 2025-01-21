@@ -1,18 +1,18 @@
-#include "VCOM.h"
-#include <stdio.h>
+#include "stm32f4xx.h"
+#include "UART.h" // Header file for UART6 driver
 
 int main(void)
 {
-    char input_char;
-    UART2_Init();  // Initialize UART2
+    /* Initialize UART6 */
+    UART6_Init();
 
-    printf("Enter a character: ");
+    /* Print Hello World using UART6 */
+    UART6_TxString("Hello World!\r\n");
 
+    /* Infinite loop */
     while (1)
     {
-        printf("Enter a character: ");
-        scanf(" %c", &input_char);  // The space before %c skips whitespace, including newline
-        printf("\r\nYou entered: %c\r\n", input_char);
+        // Your application code (if any)
     }
 
     return 0;

@@ -5,6 +5,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Src/RTC.c \
 ../Src/SYSTICK.c \
 ../Src/UART.c \
 ../Src/VCOM.c \
@@ -13,6 +14,7 @@ C_SRCS += \
 ../Src/sysmem.c 
 
 OBJS += \
+./Src/RTC.o \
 ./Src/SYSTICK.o \
 ./Src/UART.o \
 ./Src/VCOM.o \
@@ -21,6 +23,7 @@ OBJS += \
 ./Src/sysmem.o 
 
 C_DEPS += \
+./Src/RTC.d \
 ./Src/SYSTICK.d \
 ./Src/UART.d \
 ./Src/VCOM.d \
@@ -36,7 +39,7 @@ Src/%.o Src/%.su Src/%.cyclo: ../Src/%.c Src/subdir.mk
 clean: clean-Src
 
 clean-Src:
-	-$(RM) ./Src/SYSTICK.cyclo ./Src/SYSTICK.d ./Src/SYSTICK.o ./Src/SYSTICK.su ./Src/UART.cyclo ./Src/UART.d ./Src/UART.o ./Src/UART.su ./Src/VCOM.cyclo ./Src/VCOM.d ./Src/VCOM.o ./Src/VCOM.su ./Src/main.cyclo ./Src/main.d ./Src/main.o ./Src/main.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
+	-$(RM) ./Src/RTC.cyclo ./Src/RTC.d ./Src/RTC.o ./Src/RTC.su ./Src/SYSTICK.cyclo ./Src/SYSTICK.d ./Src/SYSTICK.o ./Src/SYSTICK.su ./Src/UART.cyclo ./Src/UART.d ./Src/UART.o ./Src/UART.su ./Src/VCOM.cyclo ./Src/VCOM.d ./Src/VCOM.o ./Src/VCOM.su ./Src/main.cyclo ./Src/main.d ./Src/main.o ./Src/main.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
 
 .PHONY: clean-Src
 
