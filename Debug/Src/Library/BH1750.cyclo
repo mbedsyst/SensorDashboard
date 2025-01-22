@@ -1,0 +1,2 @@
+../Src/Library/BH1750.c:5:6:BH1750_Init	1
+../Src/Library/BH1750.c:13:10:BH1750_ReadLightLevel	1

@@ -1,6 +1,0 @@
-../Src/RTC.c:4:6:RTC_Init	2
-../Src/RTC.c:19:6:RTC_SetDate	1
-../Src/RTC.c:35:6:RTC_SetTime	1
-../Src/RTC.c:51:6:RTC_GetDate	1
-../Src/RTC.c:76:6:RTC_GetTime	1
-../Src/RTC.c:102:6:RTC_Start	1

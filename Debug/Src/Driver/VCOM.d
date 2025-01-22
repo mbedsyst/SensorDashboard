@@ -1,4 +1,4 @@
-Src/VCOM.o: ../Src/VCOM.c ../Inc/VCOM.h \
+Src/Driver/VCOM.o: ../Src/Driver/VCOM.c ../Inc/Driver/VCOM.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h \
  ..//Headers/CMSIS/Include/core_cm4.h \
@@ -7,7 +7,7 @@ Src/VCOM.o: ../Src/VCOM.c ../Inc/VCOM.h \
  ..//Headers/CMSIS/Include/cmsis_gcc.h \
  ..//Headers/CMSIS/Include/mpu_armv7.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
-../Inc/VCOM.h:
+../Inc/Driver/VCOM.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h:
 ..//Headers/CMSIS/Include/core_cm4.h:

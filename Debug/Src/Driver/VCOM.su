@@ -1,0 +1,6 @@
+../Src/Driver/VCOM.c:7:6:UART2_Init	4	static
+../Src/Driver/VCOM.c:27:6:UART2_TxChar	16	static
+../Src/Driver/VCOM.c:35:6:UART2_TxString	16	static
+../Src/Driver/VCOM.c:43:9:UART2_RxChar	4	static
+../Src/Driver/VCOM.c:49:5:_write	32	static
+../Src/Driver/VCOM.c:58:5:_read	40	static

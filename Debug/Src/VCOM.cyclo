@@ -1,6 +1,0 @@
-../Src/VCOM.c:7:6:UART2_Init	1
-../Src/VCOM.c:27:6:UART2_TxChar	2
-../Src/VCOM.c:35:6:UART2_TxString	2
-../Src/VCOM.c:43:9:UART2_RxChar	2
-../Src/VCOM.c:49:5:_write	2
-../Src/VCOM.c:58:5:_read	3

@@ -1,0 +1,5 @@
+../Src/Driver/UART.c:7:17:Compute_UART_Baud	1
+../Src/Driver/UART.c:12:13:UART6_SetBaudRate	1
+../Src/Driver/UART.c:17:6:UART6_Init	1
+../Src/Driver/UART.c:37:6:UART6_TxChar	2
+../Src/Driver/UART.c:45:6:UART6_TxString	2

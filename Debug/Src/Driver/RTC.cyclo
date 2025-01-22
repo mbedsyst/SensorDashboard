@@ -1,0 +1,6 @@
+../Src/Driver/RTC.c:4:6:RTC_Init	3
+../Src/Driver/RTC.c:20:6:RTC_Start	1
+../Src/Driver/RTC.c:29:6:RTC_SetDate	1
+../Src/Driver/RTC.c:45:6:RTC_SetTime	1
+../Src/Driver/RTC.c:61:6:RTC_GetDate	1
+../Src/Driver/RTC.c:86:6:RTC_GetTime	1

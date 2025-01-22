@@ -1,4 +1,4 @@
-Src/SYSTICK.o: ../Src/SYSTICK.c ../Inc/SYSTICK.h \
+Src/Driver/UART.o: ../Src/Driver/UART.c ../Inc/Driver/UART.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h \
  ..//Headers/CMSIS/Include/core_cm4.h \
@@ -7,7 +7,7 @@ Src/SYSTICK.o: ../Src/SYSTICK.c ../Inc/SYSTICK.h \
  ..//Headers/CMSIS/Include/cmsis_gcc.h \
  ..//Headers/CMSIS/Include/mpu_armv7.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
-../Inc/SYSTICK.h:
+../Inc/Driver/UART.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h:
 ..//Headers/CMSIS/Include/core_cm4.h:

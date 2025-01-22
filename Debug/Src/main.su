@@ -1,2 +1,1 @@
-../Src/main.c:6:6:clear_screen_UART6	8	static
-../Src/main.c:12:5:main	104	static
+../Src/main.c:3:5:main	16	static

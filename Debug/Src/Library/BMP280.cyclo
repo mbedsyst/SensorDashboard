@@ -1,0 +1,11 @@
+../Src/Library/BMP280.c:3:13:BMP280_WriteRegister	1
+../Src/Library/BMP280.c:10:16:BMP280_ReadRegister	1
+../Src/Library/BMP280.c:19:13:BMP280_ReadRegisters	1
+../Src/Library/BMP280.c:26:6:BMP280_Init	2
+../Src/Library/BMP280.c:36:6:BMP280_Reset	1
+../Src/Library/BMP280.c:40:9:BMP280_ReadID	1
+../Src/Library/BMP280.c:44:6:BMP280_ReadCalibrationData	1
+../Src/Library/BMP280.c:62:6:BMP280_SetConfig	1
+../Src/Library/BMP280.c:67:6:BMP280_ReadRawData	1
+../Src/Library/BMP280.c:75:7:BMP280_CalculateTemperature	1
+../Src/Library/BMP280.c:84:7:BMP280_CalculatePressure	1

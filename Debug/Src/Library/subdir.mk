@@ -5,29 +5,26 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Src/main.c \
-../Src/syscalls.c \
-../Src/sysmem.c 
+../Src/Library/BH1750.c \
+../Src/Library/BMP280.c 
 
 OBJS += \
-./Src/main.o \
-./Src/syscalls.o \
-./Src/sysmem.o 
+./Src/Library/BH1750.o \
+./Src/Library/BMP280.o 
 
 C_DEPS += \
-./Src/main.d \
-./Src/syscalls.d \
-./Src/sysmem.d 
+./Src/Library/BH1750.d \
+./Src/Library/BMP280.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Src/%.o Src/%.su Src/%.cyclo: ../Src/%.c Src/subdir.mk
+Src/Library/%.o Src/Library/%.su Src/Library/%.cyclo: ../Src/Library/%.c Src/Library/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32F401xE -c -I../Inc -I"../$(ProjDirPath)/Headers/CMSIS/Include" -I"../$(ProjDirPath)/Headers/CMSIS/Device/ST/STM32F4xx/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 
-clean: clean-Src
+clean: clean-Src-2f-Library
 
-clean-Src:
-	-$(RM) ./Src/main.cyclo ./Src/main.d ./Src/main.o ./Src/main.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
+clean-Src-2f-Library:
+	-$(RM) ./Src/Library/BH1750.cyclo ./Src/Library/BH1750.d ./Src/Library/BH1750.o ./Src/Library/BH1750.su ./Src/Library/BMP280.cyclo ./Src/Library/BMP280.d ./Src/Library/BMP280.o ./Src/Library/BMP280.su
 
-.PHONY: clean-Src
+.PHONY: clean-Src-2f-Library
 

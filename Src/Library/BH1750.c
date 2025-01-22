@@ -1,6 +1,6 @@
 // BH1750.c
-#include "BH1750.h"
-#include "I2C.h"
+#include "Library/BH1750.h"
+#include "Driver/I2C.h"
 
 void BH1750_Init(void)
 {
