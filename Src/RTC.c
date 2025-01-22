@@ -1,61 +1,111 @@
 #include "RTC.h"
+#include "UART.h"
 
-void RTC_Init(uint8_t hour, uint8_t minute, uint8_t second, uint8_t day, uint8_t month, uint8_t year)
+void RTC_Init(void)
 {
-    /* Enable clock access to Power and RTC */
-    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+	PWR->CR |= PWR_CR_DBP;
+	while (!(PWR->CR & PWR_CR_DBP));
+	RCC->CFGR |= (16<<16);
+	RCC->BDCR |= RCC_BDCR_RTCSEL;
+	RCC->BDCR |= RCC_BDCR_RTCEN;
+	RTC->WPR |= 0xCA;
+	RTC->WPR |= 0x53;
+	RTC->ISR |= RTC_ISR_INIT;
+	while(!(RTC->ISR & RTC_ISR_INITF));
+	RTC->PRER |= 0x00000000;
+	RTC->PRER |= (0x7C<<16);
+	RTC->PRER |= (0x1F3F<<0);
+}
 
-    /* Enable access to backup domain */
-    PWR->CR |= PWR_CR_DBP;
-
-    /* Configure LSE as the RTC clock source */
-    RCC->BDCR |= RCC_BDCR_RTCEN;        // Enable RTC
-    RCC->BDCR &= ~RCC_BDCR_RTCSEL_Msk;  // Clear RTCSEL bits
-    RCC->BDCR |= (0x01 << RCC_BDCR_RTCSEL_Pos);  // Select LSE as RTC clock source
-
-    /* Reset RTC domain */
-    RCC->BDCR |= RCC_BDCR_BDRST;
-    RCC->BDCR &= ~RCC_BDCR_BDRST;
-
-    /* Enter RTC Initialization Mode */
-    RTC->ISR |= RTC_ISR_INIT;
-    while (!(RTC->ISR & RTC_ISR_INITF));
-
-    /* Configure prescalers */
-    RTC->PRER = (127U << 16) | 255U;  // 1 Hz clock (LSE = 32.768 kHz)
-
-    /* Set time */
-    RTC->TR = ((hour / 10) << 20) | ((hour % 10) << 16) |
-              ((minute / 10) << 12) | ((minute % 10) << 8) |
-              ((second / 10) << 4) | (second % 10);
-
-    /* Set date */
-    RTC->DR = ((year / 10) << 20) | ((year % 10) << 16) |
-              ((month / 10) << 12) | ((month % 10) << 8) |
-              ((day / 10) << 4) | (day % 10);
-
-    /* Exit Initialization Mode */
-    RTC->ISR &= ~RTC_ISR_INIT;
-
-    /* Enable write protection */
-    RTC->WPR = 0xFF;
+void RTC_Start(void)
+{
+	RTC->CR |= RTC_CR_FMT | RTC_CR_TSE;
+	RTC->ISR &= ~RTC_ISR_INIT;
+	RTC->WPR &= 0x55;
+	PWR->CR &= ~PWR_CR_DBP;
 }
 
 
-void RTC_GetTime(uint8_t *hour, uint8_t *minute, uint8_t *second)
+void RTC_SetDate(RTC_Date *D)
 {
-    uint32_t tr = RTC->TR;
-
-    *hour = ((tr >> 20) & 0x3) * 10 + ((tr >> 16) & 0xF);
-    *minute = ((tr >> 12) & 0x7) * 10 + ((tr >> 8) & 0xF);
-    *second = ((tr >> 4) & 0x7) * 10 + (tr & 0xF);
+	int yt, yu, wd, mt, mu, dt, du;
+	uint32_t d;
+	D->year = D->year - 2000;
+	yt = D->year/10;
+	yu = D->year%10;
+	wd = D->week_day;
+	mt = D->month/10;
+	mu = D->month%10;
+	dt = D->day/10;
+	du = D->day%10;
+	d = (uint32_t)((yt<<20) | (yu<<16) | (wd<<13) | (mt<<12) | (mu<<8) | (dt<<4) | (du<<0));
+	RTC->DR = d;
 }
 
-void RTC_GetDate(uint8_t *day, uint8_t *month, uint8_t *year)
+void RTC_SetTime(RTC_Time *T, bool time_format)
 {
-    uint32_t dr = RTC->DR;
-
-    *year = ((dr >> 20) & 0xF) * 10 + ((dr >> 16) & 0xF);
-    *month = ((dr >> 12) & 0x1) * 10 + ((dr >> 8) & 0xF);
-    *day = ((dr >> 4) & 0x3) * 10 + (dr & 0xF);
+	int ht, hu, mt, mu, st, su;
+	bool format;
+	uint32_t t;
+	format = time_format;
+	ht = T->hour/10;
+	hu = T->hour%10;
+	mt = T->min/10;
+	mu = T->min%10;
+	st = T->seconds/10;
+	su = T->seconds%10;
+	t = (uint32_t)((format<<22) | (ht<<20) | (hu<<16) | (mt<<12) | (mu<<8) | (st<<4) | (su<<0));
+	RTC->TR = t;
 }
+
+void RTC_GetDate(RTC_Date *D)
+{
+	uint32_t d;
+	int weekday, date_tens, date_units, month_tens, month_units, year_tens, year_units, date, month, year;
+
+	d = RTC->DR;
+
+	weekday     = (d & 0xE000)>>13;
+	year_tens   = (d & 0xF00000)>>20;
+	year_units  = (d & 0xF0000)>>16;
+	month_tens  = (d & 0x1000)>>12;
+	month_units = (d & 0xF00)>>8;
+	date_tens   = (d & 0x30)>>4;
+	date_units  = (d & 0xF)>>0;
+
+	year = 2000 + (year_tens * 10) + year_units;
+	month = (month_tens * 10) + month_units;
+	date = (date_tens * 10) + date_units;
+
+	D->year = year;
+	D->month = month;
+	D->day = date;
+	D->week_day = weekday;
+}
+
+void RTC_GetTime(RTC_Time *T)
+{
+	uint32_t t;
+	int format, hour_tens, hour_units, min_tens, min_units, sec_tens, sec_units, hour, min, sec;
+
+	t = RTC->TR;
+
+	format     = (t & 0xE000)>>22;
+	hour_tens  = (t & 0x300000)>>20;
+	hour_units = (t & 0xF0000)>>16;
+	min_tens   = (t & 0x7000)>>12;
+	min_units  = (t & 0xF00)>>8;
+	sec_tens   = (t & 0x30)>>4;
+	sec_units  = (t & 0xF)>>0;
+
+	hour = (hour_tens * 10) + hour_units;
+	min = (min_tens * 10) + min_units;
+	sec = (sec_tens * 10) + sec_units;
+
+	T->hour = hour;
+	T->min = min;
+	T->seconds = sec;
+	T->am_pm = format;
+}
+
+

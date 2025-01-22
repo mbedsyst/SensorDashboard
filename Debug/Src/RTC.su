@@ -1,3 +1,6 @@
-../Src/RTC.c:3:6:RTC_Init	16	static
-../Src/RTC.c:45:6:RTC_GetTime	32	static
-../Src/RTC.c:54:6:RTC_GetDate	32	static
+../Src/RTC.c:4:6:RTC_Init	4	static
+../Src/RTC.c:19:6:RTC_SetDate	48	static
+../Src/RTC.c:35:6:RTC_SetTime	48	static
+../Src/RTC.c:51:6:RTC_GetDate	64	static
+../Src/RTC.c:76:6:RTC_GetTime	64	static
+../Src/RTC.c:102:6:RTC_Start	4	static
