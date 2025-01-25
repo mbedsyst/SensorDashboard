@@ -1,4 +1,4 @@
-Src/main.o: ../Src/main.c ../Inc/Driver/UART.h \
+Src/Dashboard.o: ../Src/Dashboard.c ../Inc/Driver/UART.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h \
  ..//Headers/CMSIS/Include/core_cm4.h \
@@ -6,8 +6,7 @@ Src/main.o: ../Src/main.c ../Inc/Driver/UART.h \
  ..//Headers/CMSIS/Include/cmsis_compiler.h \
  ..//Headers/CMSIS/Include/cmsis_gcc.h \
  ..//Headers/CMSIS/Include/mpu_armv7.h \
- ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h \
- ../Inc/Driver/SYSTICK.h ../Inc/Dashboard.h
+ ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
 ../Inc/Driver/UART.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h:
@@ -17,5 +16,3 @@ Src/main.o: ../Src/main.c ../Inc/Driver/UART.h \
 ..//Headers/CMSIS/Include/cmsis_gcc.h:
 ..//Headers/CMSIS/Include/mpu_armv7.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h:
-../Inc/Driver/SYSTICK.h:
-../Inc/Dashboard.h:
