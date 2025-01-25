@@ -1,4 +1,5 @@
-Src/Driver/RTC.o: ../Src/Driver/RTC.c ../Inc/Driver/RTC.h \
+Src/Library/W25Qxx.o: ../Src/Library/W25Qxx.c ../Inc/Library/W25Qxx.h \
+ ../Inc/Driver/SPI.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
  ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h \
  ..//Headers/CMSIS/Include/core_cm4.h \
@@ -6,8 +7,10 @@ Src/Driver/RTC.o: ../Src/Driver/RTC.c ../Inc/Driver/RTC.h \
  ..//Headers/CMSIS/Include/cmsis_compiler.h \
  ..//Headers/CMSIS/Include/cmsis_gcc.h \
  ..//Headers/CMSIS/Include/mpu_armv7.h \
- ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
-../Inc/Driver/RTC.h:
+ ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h \
+ ../Inc/Driver/SYSTICK.h
+../Inc/Library/W25Qxx.h:
+../Inc/Driver/SPI.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h:
 ..//Headers/CMSIS/Include/core_cm4.h:
@@ -16,3 +19,4 @@ Src/Driver/RTC.o: ../Src/Driver/RTC.c ../Inc/Driver/RTC.h \
 ..//Headers/CMSIS/Include/cmsis_gcc.h:
 ..//Headers/CMSIS/Include/mpu_armv7.h:
 ..//Headers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h:
+../Inc/Driver/SYSTICK.h:

@@ -6,6 +6,7 @@
 "./Src/Driver/VCOM.o"
 "./Src/Library/BH1750.o"
 "./Src/Library/BMP280.o"
+"./Src/Library/W25Qxx.o"
 "./Src/main.o"
 "./Src/syscalls.o"
 "./Src/sysmem.o"

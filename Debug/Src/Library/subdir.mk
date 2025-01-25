@@ -6,15 +6,18 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Src/Library/BH1750.c \
-../Src/Library/BMP280.c 
+../Src/Library/BMP280.c \
+../Src/Library/W25Qxx.c 
 
 OBJS += \
 ./Src/Library/BH1750.o \
-./Src/Library/BMP280.o 
+./Src/Library/BMP280.o \
+./Src/Library/W25Qxx.o 
 
 C_DEPS += \
 ./Src/Library/BH1750.d \
-./Src/Library/BMP280.d 
+./Src/Library/BMP280.d \
+./Src/Library/W25Qxx.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -24,7 +27,7 @@ Src/Library/%.o Src/Library/%.su Src/Library/%.cyclo: ../Src/Library/%.c Src/Lib
 clean: clean-Src-2f-Library
 
 clean-Src-2f-Library:
-	-$(RM) ./Src/Library/BH1750.cyclo ./Src/Library/BH1750.d ./Src/Library/BH1750.o ./Src/Library/BH1750.su ./Src/Library/BMP280.cyclo ./Src/Library/BMP280.d ./Src/Library/BMP280.o ./Src/Library/BMP280.su
+	-$(RM) ./Src/Library/BH1750.cyclo ./Src/Library/BH1750.d ./Src/Library/BH1750.o ./Src/Library/BH1750.su ./Src/Library/BMP280.cyclo ./Src/Library/BMP280.d ./Src/Library/BMP280.o ./Src/Library/BMP280.su ./Src/Library/W25Qxx.cyclo ./Src/Library/W25Qxx.d ./Src/Library/W25Qxx.o ./Src/Library/W25Qxx.su
 
 .PHONY: clean-Src-2f-Library
 

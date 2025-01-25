@@ -1,6 +1,6 @@
-../Src/Driver/RTC.c:4:6:RTC_Init	4	static
-../Src/Driver/RTC.c:20:6:RTC_Start	4	static
-../Src/Driver/RTC.c:29:6:RTC_SetDate	48	static
-../Src/Driver/RTC.c:45:6:RTC_SetTime	48	static
-../Src/Driver/RTC.c:61:6:RTC_GetDate	64	static
-../Src/Driver/RTC.c:86:6:RTC_GetTime	64	static
+../Src/Driver/RTC.c:3:6:RTC_Init	4	static
+../Src/Driver/RTC.c:21:6:RTC_Set_Time	48	static
+../Src/Driver/RTC.c:36:6:RTC_Set_Date	48	static
+../Src/Driver/RTC.c:58:6:RTC_Start	4	static
+../Src/Driver/RTC.c:66:6:RTC_Get_Time	56	static
+../Src/Driver/RTC.c:91:6:RTC_Get_Date	56	static
