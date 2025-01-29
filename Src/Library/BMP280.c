@@ -1,88 +1,141 @@
 #include "Library/BMP280.h"
+#include "Driver/I2C.h"
 
-static void BMP280_WriteRegister(uint8_t reg, uint8_t value) {
-    SPI2_SelectSlave();
-    SPI2_TransmitReceiveByte(reg & 0x7F); // Write bit (MSB = 0)
-    SPI2_TransmitReceiveByte(value);
-    SPI2_DeselectSlave();
-}
+static BMP280_CalibData bmp280_calib;
+static int32_t t_fine;
 
-static uint8_t BMP280_ReadRegister(uint8_t reg) {
-    uint8_t value;
-    SPI2_SelectSlave();
-    SPI2_TransmitReceiveByte(reg | 0x80); // Read bit (MSB = 1)
-    value = SPI2_TransmitReceiveByte(0xFF); // Dummy write
-    SPI2_DeselectSlave();
-    return value;
-}
+// Function to read multiple bytes from BMP280
+static void BMP280_ReadRegister(uint8_t reg, uint8_t* data, uint8_t length)
+{
+    I2C1_Start();
+    I2C1_SendAddress(BMP280_I2C_ADDR, false);
+    I2C1_SendData(reg);
+    I2C1_Start(); // Repeated Start
+    I2C1_SendAddress(BMP280_I2C_ADDR, true);
 
-static void BMP280_ReadRegisters(uint8_t reg, uint8_t *buffer, uint16_t size) {
-    SPI2_SelectSlave();
-    SPI2_TransmitReceiveByte(reg | 0x80); // Read bit (MSB = 1)
-    SPI2_TransmitReceive_MultiByte(NULL, buffer, size);
-    SPI2_DeselectSlave();
-}
-
-void BMP280_Init(void) {
-    SPI2_Init();
-    uint8_t chipID = BMP280_ReadID();
-    if (chipID != 0x58) {
-        // Handle error: BMP280 not detected
-        while (1);
+    for (uint8_t i = 0; i < length - 1; i++) {
+        I2C1_EnableACK();
+        data[i] = I2C1_ReadData();
     }
-    BMP280_Reset();
+
+    I2C1_DisableACK();
+    data[length - 1] = I2C1_ReadData();
+    I2C1_Stop();
 }
 
-void BMP280_Reset(void) {
-    BMP280_WriteRegister(BMP280_REG_RESET, 0xB6); // Reset command
+// Function to write a byte to BMP280
+static void BMP280_WriteRegister(uint8_t reg, uint8_t value)
+{
+    I2C1_Start();
+    I2C1_SendAddress(BMP280_I2C_ADDR, false);
+    I2C1_SendData(reg);
+    I2C1_SendData(value);
+    I2C1_Stop();
 }
 
-uint8_t BMP280_ReadID(void) {
-    return BMP280_ReadRegister(BMP280_REG_ID);
+// Function to read the BMP280 calibration data
+static void BMP280_ReadCalibrationData(void)
+{
+    uint8_t calib[24];
+    BMP280_ReadRegister(BMP280_REG_CALIB, calib, 24);
+
+    bmp280_calib.dig_T1 = (calib[1] << 8) | calib[0];
+    bmp280_calib.dig_T2 = (calib[3] << 8) | calib[2];
+    bmp280_calib.dig_T3 = (calib[5] << 8) | calib[4];
+    bmp280_calib.dig_P1 = (calib[7] << 8) | calib[6];
+    bmp280_calib.dig_P2 = (calib[9] << 8) | calib[8];
+    bmp280_calib.dig_P3 = (calib[11] << 8) | calib[10];
+    bmp280_calib.dig_P4 = (calib[13] << 8) | calib[12];
+    bmp280_calib.dig_P5 = (calib[15] << 8) | calib[14];
+    bmp280_calib.dig_P6 = (calib[17] << 8) | calib[16];
+    bmp280_calib.dig_P7 = (calib[19] << 8) | calib[18];
+    bmp280_calib.dig_P8 = (calib[21] << 8) | calib[20];
+    bmp280_calib.dig_P9 = (calib[23] << 8) | calib[22];
 }
 
-void BMP280_ReadCalibrationData(BMP280_CalibData *calib) {
-    uint8_t calibBuffer[BMP280_CALIB_SIZE];
-    BMP280_ReadRegisters(BMP280_CALIB_START, calibBuffer, BMP280_CALIB_SIZE);
+// Function to initialize BMP280
+bool BMP280_Init(void)
+{
+    uint8_t id;
+    BMP280_ReadRegister(BMP280_REG_ID, &id, 1);
 
-    calib->dig_T1 = (calibBuffer[1] << 8) | calibBuffer[0];
-    calib->dig_T2 = (calibBuffer[3] << 8) | calibBuffer[2];
-    calib->dig_T3 = (calibBuffer[5] << 8) | calibBuffer[4];
-    calib->dig_P1 = (calibBuffer[7] << 8) | calibBuffer[6];
-    calib->dig_P2 = (calibBuffer[9] << 8) | calibBuffer[8];
-    calib->dig_P3 = (calibBuffer[11] << 8) | calibBuffer[10];
-    calib->dig_P4 = (calibBuffer[13] << 8) | calibBuffer[12];
-    calib->dig_P5 = (calibBuffer[15] << 8) | calibBuffer[14];
-    calib->dig_P6 = (calibBuffer[17] << 8) | calibBuffer[16];
-    calib->dig_P7 = (calibBuffer[19] << 8) | calibBuffer[18];
-    calib->dig_P8 = (calibBuffer[21] << 8) | calibBuffer[20];
-    calib->dig_P9 = (calibBuffer[23] << 8) | calibBuffer[22];
+    if (id != 0x58) { // BMP280 should return ID = 0x58
+        return false;
+    }
+
+    BMP280_ReadCalibrationData();
+
+    // Set mode to Normal, Temperature oversampling x1, Pressure oversampling x1
+    BMP280_WriteRegister(BMP280_REG_CTRL_MEAS, 0x27);
+
+    // Set standby time to 0.5ms, IIR filter off
+    BMP280_WriteRegister(BMP280_REG_CONFIG, 0x00);
+
+    return true;
 }
 
-void BMP280_SetConfig(uint8_t config, uint8_t ctrl_meas) {
-    BMP280_WriteRegister(BMP280_REG_CONFIG, config);
-    BMP280_WriteRegister(BMP280_REG_CTRL_MEAS, ctrl_meas);
+// Function to read raw temperature data
+static int32_t BMP280_ReadRawTemperature(void)
+{
+    uint8_t data[3];
+    BMP280_ReadRegister(BMP280_REG_TEMP_MSB, data, 3);
+    return (int32_t)((data[0] << 16) | (data[1] << 8) | data[2]) >> 4;
 }
 
-void BMP280_ReadRawData(int32_t *rawTemp, int32_t *rawPress) {
-    uint8_t data[6];
-    BMP280_ReadRegisters(BMP280_REG_PRESS_MSB, data, 6);
-
-    *rawPress = (data[0] << 12) | (data[1] << 4) | (data[2] >> 4);
-    *rawTemp = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4);
+// Function to read raw pressure data
+static int32_t BMP280_ReadRawPressure(void)
+{
+    uint8_t data[3];
+    BMP280_ReadRegister(BMP280_REG_PRESS_MSB, data, 3);
+    return (int32_t)((data[0] << 16) | (data[1] << 8) | data[2]) >> 4;
 }
 
-float BMP280_CalculateTemperature(int32_t rawTemp, BMP280_CalibData *calib) {
-    int32_t var1, var2, T;
-    var1 = ((((rawTemp >> 3) - ((int32_t)calib->dig_T1 << 1))) * ((int32_t)calib->dig_T2)) >> 11;
-    var2 = (((((rawTemp >> 4) - ((int32_t)calib->dig_T1)) * ((rawTemp >> 4) - ((int32_t)calib->dig_T1))) >> 12) *
-            ((int32_t)calib->dig_T3)) >> 14;
-    T = var1 + var2;
-    return (T * 5 + 128) >> 8;
+// Function to compensate temperature
+static float BMP280_CompensateTemperature(int32_t raw_temp)
+{
+    int32_t var1, var2;
+    var1 = ((((raw_temp >> 3) - ((int32_t)bmp280_calib.dig_T1 << 1))) * ((int32_t)bmp280_calib.dig_T2)) >> 11;
+    var2 = (((((raw_temp >> 4) - ((int32_t)bmp280_calib.dig_T1)) * ((raw_temp >> 4) - ((int32_t)bmp280_calib.dig_T1))) >> 12) * ((int32_t)bmp280_calib.dig_T3)) >> 14;
+    t_fine = var1 + var2;
+    return (float)((t_fine * 5 + 128) >> 8) / 100.0f;
 }
 
-float BMP280_CalculatePressure(int32_t rawPress, BMP280_CalibData *calib) {
-    // Pressure calculation (use datasheet formulas)
-    // Implement similar logic as temperature calculation
-    return 0; // Placeholder
+// Function to compensate pressure
+static float BMP280_CompensatePressure(int32_t raw_pressure)
+{
+    int64_t var1, var2, p;
+    var1 = ((int64_t)t_fine) - 128000;
+    var2 = var1 * var1 * (int64_t)bmp280_calib.dig_P6;
+    var2 += ((var1 * (int64_t)bmp280_calib.dig_P5) << 17);
+    var2 += (((int64_t)bmp280_calib.dig_P4) << 35);
+    var1 = ((var1 * var1 * (int64_t)bmp280_calib.dig_P3) >> 8) + ((var1 * (int64_t)bmp280_calib.dig_P2) << 12);
+    var1 = (((((int64_t)1) << 47) + var1)) * ((int64_t)bmp280_calib.dig_P1) >> 33;
+
+    if (var1 == 0) return 0; // Avoid division by zero
+
+    p = 1048576 - raw_pressure;
+    p = (((p << 31) - var2) * 3125) / var1;
+    var1 = (((int64_t)bmp280_calib.dig_P9) * (p >> 13) * (p >> 13)) >> 25;
+    var2 = (((int64_t)bmp280_calib.dig_P8) * p) >> 19;
+    return ((p + var1 + var2) >> 8) / 256.0f;
+}
+
+// Public functions to get temperature and pressure
+bool BMP280_ReadTemperature(float* temperature)
+{
+    *temperature = BMP280_CompensateTemperature(BMP280_ReadRawTemperature());
+    return true;
+}
+
+bool BMP280_ReadPressure(float* pressure)
+{
+    *pressure = BMP280_CompensatePressure(BMP280_ReadRawPressure());
+    return true;
+}
+
+bool BMP280_ReadTemperatureAndPressure(float* temperature, float* pressure)
+{
+    *temperature = BMP280_CompensateTemperature(BMP280_ReadRawTemperature());
+    *pressure = BMP280_CompensatePressure(BMP280_ReadRawPressure());
+    return true;
 }
