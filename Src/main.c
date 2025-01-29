@@ -1,17 +1,16 @@
-#include "Driver/UART.h"
+#include "Driver/I2C.h"
 #include "Driver/SYSTICK.h"
-#include "Dashboard.h"
-#include <stdio.h>
+#include "Library/BH1750.h"
 
 int main()
 {
-	UART6_Init();
-
-	PrintBanner();
+	uint16_t regVal = 0;
+	I2C1_Init();
+	BH1750_Init();
 
 	while(1)
 	{
-		UART6_TxString("Hello World\n\r");
+		regVal = BH1750_ReadLightLevel();
 		delay_ms(1000);
 	}
 }
