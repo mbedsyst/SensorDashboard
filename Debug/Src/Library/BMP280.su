@@ -1,11 +1,4 @@
-../Src/Library/BMP280.c:8:13:BMP280_ReadRegister	32	static
-../Src/Library/BMP280.c:27:13:BMP280_WriteRegister	16	static
-../Src/Library/BMP280.c:37:13:BMP280_ReadCalibrationData	32	static
-../Src/Library/BMP280.c:57:6:BMP280_Init	16	static
-../Src/Library/BMP280.c:78:16:BMP280_ReadRawTemperature	16	static
-../Src/Library/BMP280.c:86:16:BMP280_ReadRawPressure	16	static
-../Src/Library/BMP280.c:94:14:BMP280_CompensateTemperature	24	static
-../Src/Library/BMP280.c:104:14:BMP280_CompensatePressure	312	static
-../Src/Library/BMP280.c:124:6:BMP280_ReadTemperature	16	static
-../Src/Library/BMP280.c:130:6:BMP280_ReadPressure	16	static
-../Src/Library/BMP280.c:136:6:BMP280_ReadTemperatureAndPressure	16	static
+../Src/Library/BMP280.c:8:6:BMP280_WriteRegister	24	static
+../Src/Library/BMP280.c:17:9:BMP280_ReadRegister	24	static
+../Src/Library/BMP280.c:28:6:BMP280_Init	8	static
+../Src/Library/BMP280.c:37:6:BMP280_ReadRawData	40	static
