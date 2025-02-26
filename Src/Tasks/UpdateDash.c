@@ -2,12 +2,18 @@
 #include "main.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "Dashboard.h"
+
+#include "Tasks/UpdateDash.h"
 
 void UpdateDashTask(void *argument)
 {
     while (1)
     {
-
+    	// Lock Data Mutex
+    	// Copy Data Structure
+    	// Unlock Mutex
+    	// Call PrintBanner()
     }
 }
 

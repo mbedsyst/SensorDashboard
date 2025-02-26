@@ -3,11 +3,19 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "Tasks/WriteFlash.h"
+
 void WriteFlashTask(void *argument)
 {
     while (1)
     {
-
+    	// Lock Data Mutex
+    	// Copy Data Structure
+    	// Unlock Data Mutex
+    	// Prepare Data to Write
+    	// Lock SPI Mutex
+    	// Write Data to Flash
+    	// Unlock SPI Mutex
     }
 }
 

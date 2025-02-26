@@ -3,4 +3,4 @@
 
 void UpdateDashTask_Init(void);
 
-#endif /* TASKS_UPDATEDASH_H_ */
+#endif
