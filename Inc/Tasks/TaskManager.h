@@ -6,12 +6,23 @@
 #include "stdint.h"
 
 // Sensor Data Structure
-typedef struct {
-    float temperature;
-    float pressure;
-    float light_intensity;
-    uint32_t rtc_timestamp;
+typedef struct
+{
+    float temperature;      // In °C
+    float pressure;         // In hPa
+    float light_intensity;  // In Lux
+
+    struct
+	{
+        uint16_t year;      // Full Year (e.g., 2025)
+        uint8_t month;      // 1-12
+        uint8_t day;        // 1-31
+        uint8_t hour;       // 0-23
+        uint8_t minute;     // 0-59
+        uint8_t second;     // 0-59
+    } rtc_timestamp;        // RTC Timestamp
 } SensorData_t;
+
 
 // Mutex for Sensor Data and SPI Bus
 extern SemaphoreHandle_t data_mutex;

@@ -9,6 +9,8 @@
 #include "Library/BMP280.h"
 #include "Library/W25Qxx.h"
 
+#include <stdio.h>
+
 void ConfigSystemTask(void *argument)
 {
 	UART2_Init();
@@ -19,12 +21,16 @@ void ConfigSystemTask(void *argument)
 	BH1750_Init();
 	BMP280_Init();
 	W25Q_Init();
-	// ToDo Print VCOM Terminal messages
+
+	printf("Initialized the System\n\r");
+	printf("Deleting ConfigSystem Task\n\r");
+
+	vTaskDelete(NULL);
 }
 
 void ConfigSystemTask_Init(void)
 {
-    xTaskCreate(ConfigSystemTask, "ConfigSystemTask", 256, NULL, 2, NULL);
+    xTaskCreate(ConfigSystemTask, "ConfigSystemTask", 256, NULL, configMAX_PRIORITIES - 1, NULL);
 }
 
 
