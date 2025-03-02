@@ -1,0 +1,2 @@
+../Src/Tasks/ReadSensor.c:20:6:ReadSensorTask	72	static
+../Src/Tasks/ReadSensor.c:53:6:ReadSensorTask_Init	24	static

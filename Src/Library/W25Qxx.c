@@ -1,27 +1,29 @@
 #include "Library/W25Qxx.h"
 
+#define GPIO_PIN_6  (1U << 6)  // Pin 6
+
 static void W25Q_WriteEnable(void)
 {
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(ENABLE_WRITE);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	delay_ms(10);
 }
 
 static void W25Q_WriteDisable(void)
 {
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(DISABLE_WRITE);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	delay_ms(10);
 }
 
 static void W25Q_Reset(void)
 {
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(ENABLE_RESET);
 	SPI2_TransmitReceiveByte(EXECUTE_RESET);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	delay_ms(100);
 }
 
@@ -33,26 +35,26 @@ void W25Q_Init(void)
 
 void W25Q_PowerDown(void)
 {
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(POWER_DOWN);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 }
 
 void W25Q_PowerUp(void)
 {
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(POWER_UP);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 }
 
 uint32_t W25Q_ReadID(void)
 {
     	uint8_t dummyByte = 0xFF;
     	uint8_t id[3];
-    	SPI2_SelectSlave();
+    	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
     	SPI2_TransmitReceiveByte(READ_ID);
     	SPI2_TransmitReceive_MultiByte(&dummyByte, id, 3);
-    	SPI2_DeselectSlave();
+    	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
     	return ((id[0] << 16) | (id[1] << 8) | (id[2]));
 }
 
@@ -60,10 +62,10 @@ uint32_t W25Q_ReadUID(void)
 {
 	uint8_t dummyByte = 0xFF;
 	uint8_t id[4];
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(READ_UID);
 	SPI2_TransmitReceive_MultiByte(&dummyByte, id, 4);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	return ((id[0] << 24) | (id[1] << 16) | (id[2] << 8) | (id[3]));
 }
 
@@ -71,7 +73,7 @@ void W25Q_ReadData(uint32_t startPage, uint8_t offset, uint8_t *buffer, uint16_t
 {
 	uint32_t memAddress = (startPage * 256) + offset;
 
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(NORMAL_READ);
 	SPI2_TransmitReceiveByte((memAddress >> 16) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress >> 8) & 0xFF);
@@ -81,14 +83,14 @@ void W25Q_ReadData(uint32_t startPage, uint8_t offset, uint8_t *buffer, uint16_t
 		// Send dummy byte and receive data
 		buffer[i] = SPI2_TransmitReceiveByte(0xFF);
 	}
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 }
 
 void W25Q_FastReadData(uint32_t startPage, uint8_t offset, uint8_t *buffer, uint16_t length)
 {
 	uint32_t memAddress = (startPage * 256) + offset;
 
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(FAST_READ);
 	SPI2_TransmitReceiveByte((memAddress >> 16) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress >> 8) & 0xFF);
@@ -99,20 +101,20 @@ void W25Q_FastReadData(uint32_t startPage, uint8_t offset, uint8_t *buffer, uint
 		// Send dummy byte and receive data
 		buffer[i] = SPI2_TransmitReceiveByte(0xFF);
 	}
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 }
 
 static void W25Q_WritePage(uint32_t startPage, uint16_t offset, uint32_t size, uint8_t *data)
 {
 	uint32_t memAddress = (startPage * 256) + offset;
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(PAGE_WRITE);
 	SPI2_TransmitReceiveByte((memAddress >> 16) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress >> 8) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress) & 0xFF);
 	SPI2_TransmitReceive_MultiByte(data, NULL, size);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	W25Q_WriteDisable();
 	delay_ms(5);
 }
@@ -150,12 +152,12 @@ void W25Q_EraseSector(uint8_t blockNumber, uint8_t sectorNumber)
 {
 	uint32_t memAddress = (blockNumber * 65536) + (sectorNumber * 4096);
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(ERASE_SECTOR);
 	SPI2_TransmitReceiveByte((memAddress >> 16) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress >> 8) & 0xFF);
 	SPI2_TransmitReceiveByte(memAddress & 0xFF);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	delay_ms(500);
 }
 
@@ -163,12 +165,12 @@ void W25Q_Erase32kBlock(uint8_t blockNumber, uint8_t half)
 {
 	uint32_t memAddress = (blockNumber * 65536) + (half * 32768);
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(ERASE_32KBLOCK);
 	SPI2_TransmitReceiveByte((memAddress >> 16) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress >> 8) & 0xFF);
 	SPI2_TransmitReceiveByte(memAddress & 0xFF);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	delay_ms(1700);
 }
 
@@ -176,21 +178,21 @@ void W25Q_Erase64kBlock(uint8_t blockNumber)
 {
 	uint32_t memAddress = (blockNumber * 65536);
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(ERASE_64KBLOCK);
 	SPI2_TransmitReceiveByte((memAddress >> 16) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress >> 8) & 0xFF);
 	SPI2_TransmitReceiveByte(memAddress & 0xFF);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	delay_ms(2100);
 }
 
 void W25Q_EraseChip(void)
 {
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(ERASE_CHIP);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	delay_ms(100100);
 }
 
@@ -198,9 +200,9 @@ uint8_t W25Q_ReadStatusRegister1(void)
 {
 	uint8_t statusReg;
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	statusReg = SPI2_TransmitReceiveByte(READ_STATUS_R1);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	return statusReg;
 }
 
@@ -208,20 +210,20 @@ uint8_t W25Q_ReadStatusRegister2(void)
 {
 	uint8_t statusReg;
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	statusReg = SPI2_TransmitReceiveByte(READ_STATUS_R2);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 	return statusReg;
 }
 
 void W25Q_WriteStatusRegister(uint8_t statusReg1, uint8_t statusReg2)
 {
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(WRITE_STATUS_REG);
 	SPI2_TransmitReceiveByte(statusReg1);
 	SPI2_TransmitReceiveByte(statusReg2);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 }
 void W25Q_WriteSecurityRegister(uint8_t reg, uint8_t offset, uint8_t *data, uint16_t len)
 {
@@ -238,7 +240,7 @@ void W25Q_WriteSecurityRegister(uint8_t reg, uint8_t offset, uint8_t *data, uint
 	memAddress = memAddress + offset;
 
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(WRITE_SECURITY_REG);
 	SPI2_TransmitReceiveByte((memAddress >> 16) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress >> 8) & 0xFF);
@@ -248,7 +250,7 @@ void W25Q_WriteSecurityRegister(uint8_t reg, uint8_t offset, uint8_t *data, uint
 		// Send data and discard dummy data
 		SPI2_TransmitReceiveByte(data[i]);
 	}
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 }
 
 void W25Q_ReadSecurityRegister(uint8_t reg, uint8_t offset, uint8_t *data, uint16_t len)
@@ -266,7 +268,7 @@ void W25Q_ReadSecurityRegister(uint8_t reg, uint8_t offset, uint8_t *data, uint1
 	memAddress = memAddress + offset;
 
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(READ_SECURITY_REG);
 	SPI2_TransmitReceiveByte((memAddress >> 16) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress >> 8) & 0xFF);
@@ -276,7 +278,7 @@ void W25Q_ReadSecurityRegister(uint8_t reg, uint8_t offset, uint8_t *data, uint1
 		// Send dummy byte and receive data
 		data[i] = SPI2_TransmitReceiveByte(0xFF);
 	}
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 }
 
 void W25Q_EraseSecurityRegister(uint8_t reg)
@@ -292,10 +294,10 @@ void W25Q_EraseSecurityRegister(uint8_t reg)
 	}
 
 	W25Q_WriteEnable();
-	SPI2_SelectSlave();
+	SPI2_SelectSlave(GPIOB, GPIO_PIN_6);
 	SPI2_TransmitReceiveByte(ERASE_SECURITY_REG);
 	SPI2_TransmitReceiveByte((memAddress >> 16) & 0xFF);
 	SPI2_TransmitReceiveByte((memAddress >> 8) & 0xFF);
 	SPI2_TransmitReceiveByte(memAddress & 0xFF);
-	SPI2_DeselectSlave();
+	SPI2_DeselectSlave(GPIOB, GPIO_PIN_6);
 }

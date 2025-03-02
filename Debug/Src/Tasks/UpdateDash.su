@@ -1,0 +1,3 @@
+../Src/Tasks/UpdateDash.c:17:13:PrintBanner	288	static
+../Src/Tasks/UpdateDash.c:42:6:UpdateDashTask	80	static
+../Src/Tasks/UpdateDash.c:67:6:UpdateDashTask_Init	24	static

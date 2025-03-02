@@ -10,8 +10,7 @@ typedef struct
 {
     float temperature;      // In °C
     float pressure;         // In hPa
-    float light_intensity;  // In Lux
-
+    uint16_t light_intensity;  // In Lux
     struct
 	{
         uint16_t year;      // Full Year (e.g., 2025)
@@ -23,17 +22,10 @@ typedef struct
     } rtc_timestamp;        // RTC Timestamp
 } SensorData_t;
 
-
-// Mutex for Sensor Data and SPI Bus
 extern SemaphoreHandle_t data_mutex;
 extern SemaphoreHandle_t spi_mutex;
-
-// Shared Data Object
 extern SensorData_t shared_sensor_data;
 
-// Function Prototypes
-void data_manager_init(void);
-void data_manager_update(SensorData_t new_data);
-void data_manager_get(SensorData_t *data);
+void TaskManager_Init(void);
 
 #endif

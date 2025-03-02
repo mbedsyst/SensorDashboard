@@ -11,26 +11,32 @@
 
 #include <stdio.h>
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 void ConfigSystemTask(void *argument)
 {
-	UART2_Init();
-	UART6_Init();
-	SPI2_Init();
-	I2C1_Init();
-	RTC_Init();
-	BH1750_Init();
-	BMP280_Init();
-	W25Q_Init();
+    UART2_Init();
+    UART6_Init();
+    SPI2_Init();
+    I2C1_Init();
+    RTC_Init();
+    BH1750_Init();
+    BMP280_Init();
+    W25Q_Init();
 
-	printf("Initialized the System\n\r");
-	printf("Deleting ConfigSystem Task\n\r");
+    printf("System Initialized Successfully\n\r");
 
-	vTaskDelete(NULL);
+    printf("Deleting ConfigSystem Task\n\r");
+    vTaskDelete(NULL);
 }
 
 void ConfigSystemTask_Init(void)
 {
-    xTaskCreate(ConfigSystemTask, "ConfigSystemTask", 256, NULL, configMAX_PRIORITIES - 1, NULL);
+    BaseType_t result;
+    result = xTaskCreate(ConfigSystemTask, "ConfigSystemTask", 256, NULL, configMAX_PRIORITIES - 1, NULL);
+    if (result != pdPASS)
+    {
+        printf("Error: Failed to create ConfigSystemTask!\n\r");
+    }
 }
-
-

@@ -1,0 +1,2 @@
+../Src/Tasks/WriteFlash.c:12:6:WriteFlashTask	1
+../Src/Tasks/WriteFlash.c:50:6:WriteFlashTask_Init	2

@@ -1,4 +1,4 @@
-../Src/Library/BMP280.c:8:6:BMP280_WriteRegister	24	static
-../Src/Library/BMP280.c:17:9:BMP280_ReadRegister	24	static
-../Src/Library/BMP280.c:28:6:BMP280_Init	8	static
-../Src/Library/BMP280.c:37:6:BMP280_ReadRawData	40	static
+../Src/Library/BMP280.c:7:6:BMP280_WriteRegister	24	static
+../Src/Library/BMP280.c:16:9:BMP280_ReadRegister	24	static
+../Src/Library/BMP280.c:27:6:BMP280_Init	8	static
+../Src/Library/BMP280.c:36:6:BMP280_ReadRawData	40	static
